@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  bot:
+    build: .
+    restart: always
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    volumes:
+      - ./sessions:/app/sessions  # 保存会话数据
+    network_mode: "host"  # 使用宿主机网络，便于访问宿主机的代理服务
+    # 如果不想使用host网络模式，可以使用下面的方式配置extra_hosts来访问宿主机代理
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"  # 在容器内通过host.docker.internal访问宿主机
+
+  mongodb:
+    image: mongo:4.4
+    restart: always
+    volumes:
+      - mongodb_data:/data/db  # 持久化数据
+    ports:
+      - "27017:27017"  # 只在开发环境中需要，生产环境可以移除
+    # 如果使用host网络模式，则不需要端口映射
+    # network_mode: "host"  # 与bot服务使用相同的网络模式
+
+volumes:
+  mongodb_data:
