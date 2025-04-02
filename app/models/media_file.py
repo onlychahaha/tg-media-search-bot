@@ -1,13 +1,23 @@
 from pymongo import MongoClient, ASCENDING, TEXT
 from datetime import datetime
+import logging
 from app.config.settings import MONGODB_URI, DB_NAME
+
+logger = logging.getLogger(__name__)
 
 class MediaFileModel:
     def __init__(self):
-        self.client = MongoClient(MONGODB_URI)
-        self.db = self.client[DB_NAME]
-        self.collection = self.db.media_files
-        self._ensure_indexes()
+        """初始化MongoDB连接"""
+        try:
+            logger.info(f"尝试连接MongoDB: {MONGODB_URI}, 数据库: {DB_NAME}")
+            self.client = MongoClient(MONGODB_URI)
+            self.db = self.client[DB_NAME]
+            self.collection = self.db.media_files
+            self._ensure_indexes()
+            logger.info("MongoDB连接成功")
+        except Exception as e:
+            logger.error(f"MongoDB连接失败: {str(e)}")
+            raise
     
     def _ensure_indexes(self):
         """创建必要的索引"""

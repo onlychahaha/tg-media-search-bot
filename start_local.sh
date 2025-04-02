@@ -64,5 +64,5 @@ pip3 install -r requirements.txt
 
 # 启动机器人
 echo "启动Telegram媒体搜索机器人..."
-#python3 -m app.main 
-python3 -m debugpy --listen 5678 --wait-for-client main.py
+python3 -m app.main 
+#python3 -m debugpy --listen 5678 --wait-for-client main.py

@@ -4,3 +4,4 @@ app/config/__pycache__
 app/handlers/__pycache__
 app/utils/__pycache__
 app/models/__pycache__
+tg_media_search_bot.session
