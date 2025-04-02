@@ -28,11 +28,36 @@ class SearchHandler:
         # 注册/f命令处理器
         self.app.on_message(filters.command("f") & filters.group)(self.handle_search_command)
         
+        # 注册/help命令处理器
+        self.app.on_message(filters.command("help"))(self.handle_help_command)
+        
         # 注册分页回调处理器
         self.app.on_callback_query(filters.regex(r"^page:(.+):(\d+)$"))(self.handle_page_callback)
         
         # 注册关闭回调处理器
         self.app.on_callback_query(filters.regex(r"^close$"))(self.handle_close_callback)
+    
+    async def handle_help_command(self, client, message):
+        """处理/help命令"""
+        help_text = (
+            "📚 **媒体搜索机器人使用说明**\n\n"
+            "这是一个帮助你在群组内搜索音频和视频文件的机器人。\n\n"
+            "**主要命令**：\n"
+            "• `/f 关键词` - 搜索包含指定关键词的媒体文件\n"
+            "• `/help` - 显示此帮助信息\n\n"
+            "**使用方法**：\n"
+            "1. 在群组中发送 `/f 关键词` 来搜索媒体\n"
+            "2. 搜索结果将显示为分页列表，每页10条记录\n"
+            "3. 点击文件名可直接跳转到原始消息\n"
+            "4. 只有搜索发起者可以操作分页按钮\n"
+            "5. 搜索结果将在10分钟后自动删除\n\n"
+            "**提示**：\n"
+            "• 搜索是基于文件名进行的\n"
+            "• 机器人会自动索引群组内的媒体文件\n"
+            "• 若没有搜索到结果，可能是文件名中不包含您搜索的关键词\n"
+        )
+        
+        await message.reply(help_text, quote=True)
     
     async def handle_search_command(self, client, message):
         """处理/f搜索命令"""

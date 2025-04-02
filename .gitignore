@@ -1,0 +1,6 @@
+note.txt
+app/__pycache__
+app/config/__pycache__
+app/handlers/__pycache__
+app/utils/__pycache__
+app/models/__pycache__
