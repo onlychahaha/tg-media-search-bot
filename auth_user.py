@@ -49,7 +49,8 @@ async def main():
         system_version=system_version,# 系统版本（辅助区分）
         app_version=app_version,      # 应用版本（辅助区分）
         in_memory=False,              # 使用文件存储会话
-        hide_password=True            # 隐藏密码输入
+        hide_password=True,           # 隐藏密码输入
+        allow_flooded=True            # 允许在短时间内发送大量请求
     )
     
     # 如果启用了代理，添加代理配置
@@ -91,7 +92,8 @@ async def main():
         print("⚠️ 重要提示:")
         print("1. 确保您的用户账号已加入需要索引的所有群组")
         print("2. 现在您可以运行 'python3 -m app.main' 启动机器人")
-        print("3. 此会话不会影响您在其他设备上的登录状态")
+        print("3. 主程序会自动使用此会话文件，无需再次登录")
+        print("4. 此会话不会影响您在其他设备上的登录状态")
     except Exception as e:
         print(f"\n❌ 认证过程中出现错误: {str(e)}")
         print("请检查API凭据和网络连接后重试")

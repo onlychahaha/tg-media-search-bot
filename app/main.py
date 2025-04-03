@@ -69,7 +69,8 @@ class MediaSearchBot:
             system_version=system_version,
             app_version=app_version,
             in_memory=False,              # 文件存储会话
-            no_updates=True               # 不接收更新，只用于API调用
+            no_updates=True,              # 不接收更新，只用于API调用
+            allow_flooded=True            # 允许在短时间内发送大量请求（适用于索引功能）
         )
         
         # 创建机器人客户端 - 用于处理搜索命令
@@ -246,7 +247,9 @@ class MediaSearchBot:
         
         try:
             logger.info("正在启动用户客户端...")
-            # 启动用户客户端 - 这不会影响其他设备的会话
+            # 重要：这里的start()不会要求重新登录
+            # 如果会话文件有效，它会自动恢复会话而不是请求手机号和验证码
+            # 这不是重复登录，而是利用auth_user.py已经创建的会话凭证
             await self.user.start()
             user_connected = True
             user_info = await self.user.get_me()
@@ -287,7 +290,8 @@ class MediaSearchBot:
             logger.info("机器人客户端已停止")
             
             # 关闭用户客户端
-            # 注意: 这只会关闭当前连接，不会影响其他设备的会话
+            # 注意: stop()方法只会关闭当前连接，不会撤销会话凭证
+            # 这确保下次启动时可以无缝恢复会话，也不会影响其他设备
             await self.user.stop()
             logger.info("用户客户端已停止")
         except Exception as e:
