@@ -1,4 +1,5 @@
 from pyrogram import Client
+from pyrogram.types import Message
 from pyrogram.enums import MessageMediaType
 from datetime import datetime
 import asyncio
@@ -8,7 +9,7 @@ from app.models.media_file import MediaFileModel
 logger = logging.getLogger(__name__)
 
 class MediaIndexer:
-    def __init__(self, client):
+    def __init__(self, client: Client):
         """
         初始化媒体索引器
         
@@ -28,7 +29,7 @@ class MediaIndexer:
         count = 0
         
         try:
-            async for message in self.client.get_chat_history(chat_id):
+            async for message in self.client.get_chat_history(chat_id):  # type: Message
                 if await self._process_message(message):
                     count += 1
                     
@@ -41,6 +42,7 @@ class MediaIndexer:
                 
         except Exception as e:
             logger.error(f"索引群组 {chat_id} 历史时出错: {str(e)}")
+            logger.exception(e)
         
         logger.info(f"群组 {chat_id} 历史索引完成，共索引 {count} 条媒体文件")
         return count
@@ -101,7 +103,7 @@ class MediaIndexer:
             "message_id": message.id,
             "chat_id": message.chat.id,
             "sender_id": message.from_user.id if message.from_user else 0,
-            "timestamp": datetime.utcfromtimestamp(message.date),
+            "timestamp": message.date if isinstance(message.date, datetime) else datetime.utcfromtimestamp(message.date),
             "media_type": media_type,
             "file_size": file_size,
             "duration": duration
